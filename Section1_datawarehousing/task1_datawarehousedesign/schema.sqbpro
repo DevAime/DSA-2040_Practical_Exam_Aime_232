@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="schema.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2408"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="CustomerDim" custom_title="0" dock_id="1" table="4,11:mainCustomerDim"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000011300ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1*">-- Dimension Table: Customer
+CREATE TABLE CustomerDim (
+    CustomerID INT PRIMARY KEY,
+    CustomerName VARCHAR(100),
+    Country VARCHAR(50),
+    Region VARCHAR(50),
+    RegistrationDate DATE
+);
+
+-- Dimension Table: Product
+CREATE TABLE ProductDim (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(200),
+    ProductCategory VARCHAR(100),
+    UnitPrice DECIMAL(10, 2),
+    Supplier VARCHAR(100)
+);
+
+-- Dimension Table: Time
+CREATE TABLE TimeDim (
+    TimeID INT PRIMARY KEY,
+    Date DATE,
+    Day INT,
+    Month INT,
+    Quarter INT,
+    Year INT,
+    DayOfWeek VARCHAR(20)
+);
+
+-- Fact Table: Sales
+CREATE TABLE SalesFact (
+    SalesID INTEGER PRIMARY KEY AUTOINCREMENT,
+    CustomerID INT,
+    ProductID INT,
+    TimeID INT,
+    Quantity INT,
+    SalesAmount DECIMAL(12, 2),
+    Discount DECIMAL(5, 2),
+    NetSales DECIMAL(12, 2),
+    FOREIGN KEY (CustomerID) REFERENCES CustomerDim(CustomerID),
+    FOREIGN KEY (ProductID) REFERENCES ProductDim(ProductID),
+    FOREIGN KEY (TimeID) REFERENCES TimeDim(TimeID)
+);
+
+-- Create indexes for better query performance
+CREATE INDEX idx_sales_customer ON SalesFact(CustomerID);
+CREATE INDEX idx_sales_product ON SalesFact(ProductID);
+CREATE INDEX idx_sales_time ON SalesFact(TimeID);
+CREATE INDEX idx_product_category ON ProductDim(ProductCategory);
+CREATE INDEX idx_customer_country ON CustomerDim(Country);
+CREATE INDEX idx_time_quarter ON TimeDim(Quarter, Year);</sql><current_tab id="0"/></tab_sql></sqlb_project>
